@@ -29,4 +29,15 @@ jobs:
       - name: Build and push product-admin image
         uses: docker/build-push-action@v5
         with:
-          context: ./product
+          context: ./product-admin-svc
+          file: ./product-admin-svc/Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/product-admin:${{ github.event.release.tag_name }}
+
+      - name: Build and push shop-front image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./shop-front-svc
+          file: ./shop-front-svc/Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/shop-front:${{ github.event.release.tag_name }}
