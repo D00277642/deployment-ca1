@@ -1,0 +1,39 @@
+services:
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  catalog:
+    build: ./catalog-svc
+    environment:
+    - FEATURE_DISCOUNT=true
+
+
+  product-admin:
+    build: ./product-admin-svc
+    ports:
+      - "6546:5000"
+    volumes:
+      - ./product-admin-svc:/root/app
+    depends_on:
+      - catalog
+
+  shop-front:
+    build: ./shop-front-svc
+    ports:
+      - "6544:5000"
+    volumes:
+      - ./shop-front-svc:/root/app
+    depends_on:
+      - catalog
+
+  gateway:
+    image: nginx:alpine
+    ports:
+      - "6545:80"
+    volumes:
+      - ./gateway/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - shop-front
+      - product-admin

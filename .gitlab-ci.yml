@@ -1,0 +1,13 @@
+stages:
+  - build
+
+build_images:
+  stage: build
+  script:
+    - docker build -t $DOCKERHUB_USERNAME/catalog:$CI_COMMIT_TAG ./catalog-svc
+    - docker build -t $DOCKERHUB_USERNAME/product-admin:$CI_COMMIT_TAG ./product-admin-svc
+    - docker build -t $DOCKERHUB_USERNAME/shop-front:$CI_COMMIT_TAG ./shop-front-svc
+
+    - docker push $DOCKERHUB_USERNAME/catalog:$CI_COMMIT_TAG
+    - docker push $DOCKERHUB_USERNAME/product-admin:$CI_COMMIT_TAG
+    - docker push $DOCKERHUB_USERNAME/shop-front:$CI_COMMIT_TAG
