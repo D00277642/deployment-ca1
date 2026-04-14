@@ -16,9 +16,9 @@ def add_product():
     }
     
     # Send to catalog service
-    response = requests.post('http://catalog:5000/add-product', json=product_data)
+    response = requests.post('http://catalog:5000/catalog', json=product_data)
     
-    if response.status_code == 200:
+    if response.status_code in (200, 201):
         return redirect(url_for('index'))
     else:
         return "Error adding product", 500
