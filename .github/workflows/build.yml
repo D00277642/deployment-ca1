@@ -1,0 +1,32 @@
+name: Build and Push Docker Images
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Log in to DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push catalog image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./catalog-svc
+          file: ./catalog-svc/Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/catalog:${{ github.event.release.tag_name }}
+
+      - name: Build and push product-admin image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./product
